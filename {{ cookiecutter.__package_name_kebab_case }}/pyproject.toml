@@ -20,9 +20,6 @@ repository = "{{ cookiecutter.package_url }}"
 pydantic = ">=1.10.7"
 {%- endif %}
 python = ">={{ cookiecutter.python_version }},<4.0"
-{%- if cookiecutter.with_sentry_logging|int %}
-sentry-sdk = ">=1.16.0"
-{%- endif %}
 {%- if cookiecutter.with_typer_cli|int %}
 typer = { extras = ["all"], version = ">=0.9.0" }
 {%- endif %}

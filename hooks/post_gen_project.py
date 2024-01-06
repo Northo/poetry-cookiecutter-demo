@@ -3,15 +3,9 @@ import shutil
 
 # Read Cookiecutter configuration.
 package_name = "{{ cookiecutter.__package_name_snake_case }}"
-with_sentry_logging = int("{{ cookiecutter.with_sentry_logging }}")
 with_typer_cli = int("{{ cookiecutter.with_typer_cli }}")
 continuous_integration = "{{ cookiecutter.continuous_integration }}"
 is_publishable_package = True
-
-# Remove Sentry if not selected.
-if not with_sentry_logging:
-    os.remove(f"src/{package_name}/sentry.py")
-    os.remove("tests/test_sentry.py")
 
 # Remove Typer if not selected.
 if not with_typer_cli:
