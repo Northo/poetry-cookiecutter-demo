@@ -4,7 +4,7 @@
   "package_url": "https://github.com/user/my-package",
   "author_name": "John Smith",
   "author_email": "john@example.com",
-  "python_version": "3.8",
+  "python_version": "3.11",
   "with_jupyter_lab": "0",
   "with_typer_cli": "0",
   "continuous_integration": ["GitHub", "GitLab"],
