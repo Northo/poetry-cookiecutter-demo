@@ -9,15 +9,6 @@ description = "{{ cookiecutter.package_description }}"
 authors = ["{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>"]
 readme = "README.md"
 repository = "{{ cookiecutter.package_url }}"
-{%- if cookiecutter.with_conventional_commits|int %}
-
-[tool.commitizen]  # https://commitizen-tools.github.io/commitizen/config/
-bump_message = "bump(release): v$current_version → v$new_version"
-tag_format = "v$version"
-update_changelog_on_bump = true
-version = "0.0.0"
-version_files = ["pyproject.toml:version"]
-{%- endif %}
 {%- if cookiecutter.with_typer_cli|int %}
 
 [tool.poetry.scripts]  # https://python-poetry.org/docs/pyproject/#scripts
@@ -51,9 +42,6 @@ uvicorn = { extras = ["standard"], version = ">=0.20.0" }
 {%- endif %}
 
 [tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
-{%- if cookiecutter.with_conventional_commits|int %}
-commitizen = ">=3.2.1"
-{%- endif %}
 coverage = { extras = ["toml"], version = ">=7.2.5" }
 mypy = ">=1.2.0"
 {%- if not cookiecutter.with_fastapi_api|int and not cookiecutter.with_streamlit_app|int %}
