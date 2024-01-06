@@ -47,7 +47,7 @@ repos:
       - id: ruff-check
         name: ruff check
         entry: ruff check
-        args: ["--force-exclude", "--extend-fixable={% if cookiecutter.development_environment == "strict" %}ERA001,F401,F841,T201,T203{% else %}F401,F841{% endif %}"{% if cookiecutter.development_environment == "simple" %}, "--fix-only"{% endif %}]
+        args: ["--force-exclude", "--extend-fixable=F401,F841", "--fix-only"]
         require_serial: true
         language: system
         types_or: [python, pyi]
@@ -58,14 +58,6 @@ repos:
         require_serial: true
         language: system
         types_or: [python, pyi]
-      {%- if cookiecutter.development_environment == "strict" %}
-      - id: shellcheck
-        name: shellcheck
-        entry: shellcheck
-        args: [--check-sourced]
-        language: system
-        types: [shell]
-      {%- endif %}
       - id: poetry-check
         name: poetry check
         entry: poetry check

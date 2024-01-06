@@ -16,14 +16,6 @@ repository = "{{ cookiecutter.package_url }}"
 {%- endif %}
 
 [tool.poetry.dependencies]  # https://python-poetry.org/docs/dependency-specification/
-{%- if cookiecutter.with_fastapi_api|int %}
-coloredlogs = ">=15.0.1"
-fastapi = { extras = ["all"], version = ">=0.92.0" }
-gunicorn = ">=20.1.0"
-{%- endif %}
-{%- if cookiecutter.with_fastapi_api|int or cookiecutter.with_streamlit_app|int %}
-poethepoet = ">=0.20.0"
-{%- endif %}
 {%- if cookiecutter.with_pydantic_typing|int %}
 pydantic = ">=1.10.7"
 {%- endif %}
@@ -31,33 +23,20 @@ python = ">={{ cookiecutter.python_version }},<4.0"
 {%- if cookiecutter.with_sentry_logging|int %}
 sentry-sdk = ">=1.16.0"
 {%- endif %}
-{%- if cookiecutter.with_streamlit_app|int %}
-streamlit = ">=1.19.0"
-{%- endif %}
 {%- if cookiecutter.with_typer_cli|int %}
 typer = { extras = ["all"], version = ">=0.9.0" }
-{%- endif %}
-{%- if cookiecutter.with_fastapi_api|int %}
-uvicorn = { extras = ["standard"], version = ">=0.20.0" }
 {%- endif %}
 
 [tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 coverage = { extras = ["toml"], version = ">=7.2.5" }
 mypy = ">=1.2.0"
-{%- if not cookiecutter.with_fastapi_api|int and not cookiecutter.with_streamlit_app|int %}
 poethepoet = ">=0.20.0"
-{%- endif %}
 pre-commit = ">=3.3.1"
 pytest = ">=7.3.1"
 pytest-clarity = ">=1.0.1"
 pytest-mock = ">=3.10.0"
 pytest-xdist = ">=3.2.1"
 ruff = ">=0.1.3"
-{%- if cookiecutter.development_environment == "strict" %}
-safety = ">=2.3.4,!=2.3.5"
-shellcheck-py = ">=0.9.0"
-typeguard = ">=3.0.2"
-{%- endif %}
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 cruft = ">=2.14.0"
@@ -73,9 +52,6 @@ url = "{{ cookiecutter.private_package_repository_url }}"
 {%- endif %}
 
 [tool.coverage.report]  # https://coverage.readthedocs.io/en/latest/config.html#report
-{%- if cookiecutter.development_environment == "strict" %}
-fail_under = 50
-{%- endif %}
 precision = 1
 show_missing = true
 skip_covered = true
@@ -91,34 +67,15 @@ output = "reports/coverage.xml"
 
 [tool.mypy]  # https://mypy.readthedocs.io/en/latest/config_file.html
 junit_xml = "reports/mypy.xml"
-{%- if cookiecutter.with_fastapi_api|int or cookiecutter.with_pydantic_typing|int %}
-plugins = "pydantic.mypy"
-{%- endif %}
-{%- if cookiecutter.development_environment == "strict" %}
-strict = true
-disallow_subclassing_any = false
-disallow_untyped_decorators = false
-{%- endif %}
 ignore_missing_imports = true
 pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
 warn_unreachable = true
-{%- if cookiecutter.development_environment == "strict" and (cookiecutter.with_fastapi_api|int or cookiecutter.with_pydantic_typing|int) %}
-
-[tool.pydantic-mypy]  # https://pydantic-docs.helpmanual.io/mypy_plugin/#configuring-the-plugin
-init_forbid_extra = true
-init_typed = true
-warn_required_dynamic_aliases = true
-warn_untyped_fields = true
-{%- endif %}
 
 [tool.pytest.ini_options]  # https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
-addopts = "--color=yes --doctest-modules --exitfirst --failed-first{% if cookiecutter.development_environment == 'strict' %} --strict-config --strict-markers --typeguard-packages={{ cookiecutter.__package_name_snake_case }}{% endif %} --verbosity=2 --junitxml=reports/pytest.xml"
-{%- if cookiecutter.development_environment == "strict" %}
-filterwarnings = ["error", "ignore::DeprecationWarning"]
-{%- endif %}
+addopts = "--color=yes --doctest-modules --exitfirst --failed-first --verbosity=2 --junitxml=reports/pytest.xml"
 testpaths = ["src", "tests"]
 xfail_strict = true
 
@@ -126,102 +83,19 @@ xfail_strict = true
 fix = true
 ignore-init-module-imports = true
 line-length = 100
-{%- if cookiecutter.development_environment == "strict" %}
-select = ["A", "ASYNC", "B", "BLE", "C4", "C90", "D", "DTZ", "E", "EM", "ERA", "F", "FBT", "FLY", "FURB", "G", "I", "ICN", "INP", "INT", "ISC", "LOG", "N", "NPY", "PERF", "PGH", "PIE", "PLC", "PLE", "PLR", "PLW", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "S", "SIM", "SLF", "SLOT", "T10", "T20", "TCH", "TID", "TRY", "UP", "W", "YTT"]
-ignore = ["E501", "PGH001", "RET504", "S101"]
-unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
-{%- else %}
 select = ["A", "ASYNC", "B", "C4", "C90", "D", "DTZ", "E", "F", "FLY", "FURB", "I", "ISC", "LOG", "N", "NPY", "PERF", "PGH", "PIE", "PLC", "PLE", "PLR", "PLW", "PT", "RET", "RUF", "RSE", "SIM", "TID", "UP", "W", "YTT"]
 ignore = ["E501", "PGH001", "PGH002", "PGH003", "RET504", "S101"]
 unfixable = ["F401", "F841"]
-{%- endif %}
 src = ["src", "tests"]
 target-version = "py{{ cookiecutter.python_version.split('.')[:2]|join }}"
 
 [tool.ruff.flake8-tidy-imports]
 ban-relative-imports = "all"
-{%- if cookiecutter.development_environment == "strict" %}
-
-[tool.ruff.pycodestyle]
-max-doc-length = 100
-{%- endif %}
 
 [tool.ruff.pydocstyle]
 convention = "{{ cookiecutter.docstring_style|lower }}"
 
 [tool.poe.tasks]  # https://github.com/nat-n/poethepoet
-{%- if cookiecutter.with_fastapi_api|int %}
-
-  [tool.poe.tasks.api]
-  help = "Serve a REST API"
-  shell = """
-    if [ $dev ]
-    then {
-      uvicorn \
-        --host $host \
-        --port $port \
-        --reload \
-        {{ cookiecutter.__package_name_snake_case }}.api:app
-    } else {
-      gunicorn \
-        --access-logfile - \
-        --bind $host:$port \
-        --graceful-timeout 10 \
-        --keep-alive 10 \
-        --log-file - \
-        --timeout 30 \
-        --worker-class uvicorn.workers.UvicornWorker \
-        --worker-tmp-dir /dev/shm \
-        --workers 2 \
-        {{ cookiecutter.__package_name_snake_case }}.api:app
-    } fi
-    """
-
-    [[tool.poe.tasks.api.args]]
-    help = "Bind socket to this host (default: 0.0.0.0)"
-    name = "host"
-    options = ["--host"]
-    default = "0.0.0.0"
-
-    [[tool.poe.tasks.api.args]]
-    help = "Bind socket to this port (default: 8000)"
-    name = "port"
-    options = ["--port"]
-    default = "8000"
-
-    [[tool.poe.tasks.api.args]]
-    help = "Enable development mode"
-    type = "boolean"
-    name = "dev"
-    options = ["--dev"]
-{%- endif %}
-{%- if cookiecutter.with_streamlit_app|int %}
-
-  [tool.poe.tasks.app]
-  help = "Serve a Streamlit app"
-  cmd = """
-    streamlit run
-      --browser.gatherUsageStats false
-      --server.address $host
-      --server.port $port
-      --theme.base light
-      src/{{ cookiecutter.__package_name_snake_case }}/app.py
-    """
-  use_exec = true
-
-    [[tool.poe.tasks.app.args]]
-    help = "Bind socket to this host (default: 0.0.0.0)"
-    name = "host"
-    options = ["--host"]
-    default = "0.0.0.0"
-
-    [[tool.poe.tasks.app.args]]
-    help = "Bind socket to this port (default: 8000)"
-    name = "port"
-    options = ["--port"]
-    default = "8000"
-{%- endif %}
-
   [tool.poe.tasks.docs]
   help = "Generate this package's docs"
   cmd = """
@@ -267,11 +141,6 @@ convention = "{{ cookiecutter.docstring_style|lower }}"
         --all-files
         --color always
       """
-{%- if cookiecutter.development_environment == "strict" %}
-
-    [[tool.poe.tasks.lint.sequence]]
-    shell = "safety check --continue-on-error --full-report"
-{%- endif %}
 
   [tool.poe.tasks.test]
   help = "Test this package"
