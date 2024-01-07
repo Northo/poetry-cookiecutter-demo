@@ -16,8 +16,3 @@ if not with_typer_cli:
 if continuous_integration != "GitHub":
     # TODO: remove continous_integration option entirely
     raise ValueError("Invalid configuration!")
-
-# Remove unused GitHub Actions workflows.
-if continuous_integration == "GitHub":
-    if not is_publishable_package:
-        os.remove(".github/workflows/publish.yml")
