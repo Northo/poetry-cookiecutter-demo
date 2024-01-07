@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.10"]
+        python-version: ["3.8", "3.11"]
 
     name: Python ${{ matrix.python-version }}
 
@@ -26,41 +26,24 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up Poetry
+        run: pip install pipx && pipx install poetry==1.7.1
 
       - name: Scaffold Python package
         run: |
-          pip install --no-input cruft
-          cruft create --no-input --extra-context '{"package_name": "My Package", "python_version": "3.11", "with_typer_cli": "1"}' ./template/
+          pipx install cruft
+          cruft create --no-input --extra-context '{"package_name": "My Package", "python_version": "${{ matrix.python-version }}", "with_typer_cli": "1"}' ./template/
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 21
-
-      - name: Install @devcontainers/cli
-        run: npm install --location=global @devcontainers/cli@0.55.0
-
-      - name: Start Dev Container with Python ${{ matrix.python-version }}
-        run: |
-          git config --global init.defaultBranch main
-          git init
-          git checkout -b test
-          git add .
-          PYTHON_VERSION=${{ matrix.python-version }} devcontainer up --workspace-folder .
+      - name: Install package
+        run: poetry install
         working-directory: ./my-package/
 
       - name: Lint package
-        run: devcontainer exec --workspace-folder my-package poe lint
+        run: poetry run poe lint
+        working-directory: ./my-package/
 
       - name: Test package
-        run: devcontainer exec --workspace-folder my-package poe test
-
-      - name: Build app Docker image
-        uses: docker/build-push-action@v5
-        with:
-          build-args: |
-            SOURCE_BRANCH=${{ env.GITHUB_REF }}
-            SOURCE_COMMIT=${{ env.GITHUB_SHA }}
-          context: ./my-package/
-          target: app
+        run: poetry run poe test
+        working-directory: ./my-package/
