@@ -26,12 +26,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.11"
 
       - name: Scaffold Python package
         run: |
           pip install --no-input cruft
-          cruft create --no-input --extra-context '{"package_name": "My Package", "python_version": "3.8", "with_typer_cli": "1"}' ./template/
+          cruft create --no-input --extra-context '{"package_name": "My Package", "python_version": "3.11", "with_typer_cli": "1"}' ./template/
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
