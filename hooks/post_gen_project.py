@@ -14,9 +14,8 @@ if not with_typer_cli:
 
 # Remove the continuous integration provider that is not selected.
 if continuous_integration != "GitHub":
-    shutil.rmtree(".github/")
-elif continuous_integration != "GitLab":
-    os.remove(".gitlab-ci.yml")
+    # TODO: remove continous_integration option entirely
+    raise ValueError("Invalid configuration!")
 
 # Remove unused GitHub Actions workflows.
 if continuous_integration == "GitHub":
