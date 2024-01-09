@@ -11,8 +11,8 @@
     "GitHub"
   ],
   "docstring_style": [
-    "NumPy",
-    "Google"
+    "Google",
+    "NumPy"
   ],
   "private_package_repository_name": "",
   "private_package_repository_url": "",
