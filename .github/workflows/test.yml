@@ -13,7 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.11"]
+        python-version:
+          - "3.8"
+          - "3.11"
 
     name: Python ${{ matrix.python-version }}
 
@@ -28,13 +30,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Set up Poetry
-        run: pip install pipx && pipx install poetry==1.7.1
-
       - name: Scaffold Python package
         run: |
           pipx install cruft
           cruft create --no-input --extra-context '{"package_name": "My Package", "python_version": "${{ matrix.python-version }}", "with_typer_cli": "1"}' ./template/
+          git init
+
+      - name: Set up Poetry
+        run: pipx install poetry==1.7.1
 
       - name: Install package
         run: poetry install
