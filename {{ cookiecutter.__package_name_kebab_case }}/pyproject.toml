@@ -37,7 +37,7 @@ cruft = ">=2.14.0"
 {%- if cookiecutter.with_jupyter_lab|int %}
 jupyterlab = ">=3.6.3"
 {%- endif %}
-pdoc = ">=13.1.1"
+mkdocs-material = ">=9.5.3"
 {%- if cookiecutter.private_package_repository_name %}
 
 [[tool.poetry.source]]  # https://python-poetry.org/docs/repositories/#using-a-private-repository
@@ -92,24 +92,12 @@ convention = "{{ cookiecutter.docstring_style|lower }}"
 [tool.poe.tasks]  # https://github.com/nat-n/poethepoet
   [tool.poe.tasks.docs]
   help = "Generate this package's docs"
-  cmd = """
-    pdoc
-      --docformat $docformat
-      --output-directory $outputdirectory
-      {{ cookiecutter.__package_name_snake_case }}
-    """
+  cmd = "mkdocs build"
 
-    [[tool.poe.tasks.docs.args]]
-    help = "The docstring style (default: {{ cookiecutter.docstring_style|lower }})"
-    name = "docformat"
-    options = ["--docformat"]
-    default = "{{ cookiecutter.docstring_style|lower }}"
+  [tool.poe.tasks.docs-preview]
+  help = "Preview this package's docs"
+  cmd = "mkdocs serve"
 
-    [[tool.poe.tasks.docs.args]]
-    help = "The output directory (default: docs)"
-    name = "outputdirectory"
-    options = ["--output-directory"]
-    default = "docs"
 {%- if cookiecutter.with_jupyter_lab|int %}
 
   [tool.poe.tasks.lab]

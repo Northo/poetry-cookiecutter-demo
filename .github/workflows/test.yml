@@ -50,3 +50,7 @@ jobs:
       - name: Test package
         run: poetry run poe test
         working-directory: ./my-package/
+
+      - name: Test building docs
+        run: poetry run poe docs
+        working-directory: ./my-package/
