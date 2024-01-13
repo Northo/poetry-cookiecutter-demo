@@ -1,0 +1,38 @@
+name: Build and Push Cookiecutter Project
+
+on: [push]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: template
+
+      - name: Scaffold Python package
+        # Scaffold package in ./my-package
+        run: |
+          pipx install cruft
+          cruft create --no-input --extra-context "{
+            \"package_name\": \"My Package\",
+            \"package_description\": \"Package scaffolded with https://github.com/$GITHUB_REPOSITORY.\",
+            \"with_typer_cli\": \"1\" 
+          }" ./template/
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global init.defaultBranch main
+
+      - name: Commit and Push to Demo Repo
+        working-directory: my-package
+        run: |
+          git init
+          git add .
+          git commit -m "Auto-generated project from cookiecutter template"
+          git remote add origin https://x-access-token:${{ secrets.DEMO_REPO_TOKEN }}@github.com/northo/poetry-cookiecutter-demo-demo.git
+          git push --force origin main --progress -v
